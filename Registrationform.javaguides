@@ -1,0 +1,78 @@
+package com.javaguides.javaswing.reg;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+public class UserRegistration extends JFrame {
+    private JPanel contentPane;
+    private JTextField firstname;
+    private JTextField lastname;
+    private JTextField email;
+    private JTextField username;
+    private JTextField mob;
+    private JPasswordField passwordField;
+    private JButton btnNewButton;
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+                UserRegistration frame = new UserRegistration();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public UserRegistration() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 450, 300);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        // Add your form components (labels, text fields, buttons) here
+        // For example:
+        JLabel lblName = new JLabel("Name:");
+        lblName.setBounds(10, 10, 80, 20);
+        contentPane.add(lblName);
+
+        firstname = new JTextField();
+        firstname.setBounds(100, 10, 150, 20);
+        contentPane.add(firstname);
+
+        // Add other form components similarly
+
+        btnNewButton = new JButton("Register");
+        btnNewButton.addActionListener(e -> {
+            // Get user input from text fields
+            String firstName = firstname.getText();
+            String lastName = lastname.getText();
+            String userName = username.getText();
+            String password = new String(passwordField.getPassword());
+            String emailId = email.getText();
+            String mobileNumber = mob.getText();
+
+            // Store data in the database (use JDBC)
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/swing_demo", "your_username", "your_password");
+                Statement statement = connection.createStatement();
+                String insertQuery = "INSERT INTO account (first_name, last_name, user_name, password, email_id, mobile_number) VALUES ('" +
+                        firstName + "', '" + lastName + "', '" + userName + "', '" + password + "', '" + emailId + "', '" + mobileNumber + "')";
+                statement.executeUpdate(insertQuery);
+                JOptionPane.showMessageDialog(null, "Registration successful!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error occurred while registering.");
+            }
+        });
+        btnNewButton.setBounds(100, 200, 100, 30);
+        contentPane.add(btnNewButton);
+    }
+}
